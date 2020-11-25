@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/nicobianchetti/Go-CleanArchitecture/model"
 	"github.com/nicobianchetti/Go-CleanArchitecture/repository"
 )
@@ -13,6 +15,7 @@ type IPermisoService interface {
 	GetAll() (*model.Permisos, error)
 	GetByID(string) (*model.Permiso, error)
 	Delete(string) error
+	Validate(permiso *model.Permiso) error
 }
 
 type permisoService struct{}
@@ -25,6 +28,20 @@ var (
 func NewPermisoService(repos repository.IPermisoRepository) IPermisoService {
 	repo = repos
 	return &permisoService{}
+}
+
+// Migrate is used for migrate permiso
+func (s *permisoService) Validate(permiso *model.Permiso) error {
+	if permiso == nil {
+		err := errors.New("Permiso is empty")
+		return err
+	}
+
+	if permiso.Name == "" {
+		err := errors.New("The name permiso es empty")
+		return err
+	}
+	return nil
 }
 
 // Migrate is used for migrate permiso
