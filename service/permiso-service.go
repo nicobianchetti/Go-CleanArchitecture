@@ -18,11 +18,12 @@ type IPermisoService interface {
 type permisoService struct{}
 
 var (
-	repo repository.IPermisoRepository = repository.NewPermisoRepository()
+	repo repository.IPermisoRepository
 )
 
 //NewPermisoService create new instance of service
-func NewPermisoService() IPermisoService {
+func NewPermisoService(repos repository.IPermisoRepository) IPermisoService {
+	repo = repos
 	return &permisoService{}
 }
 
@@ -47,7 +48,10 @@ func (s *permisoService) Create(p *model.Permiso) error {
 // GetAll is used for get all the permisos
 func (s *permisoService) GetAll() (*model.Permisos, error) {
 	// return s.service.GetAll()
-	return nil, nil
+
+	return repo.GetAll()
+
+	// return nil, nil
 }
 
 // GetByID is used for get a permiso

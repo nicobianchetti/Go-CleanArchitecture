@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/nicobianchetti/Go-CleanArchitecture/model"
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/nicobianchetti/Go-CleanArchitecture/database"
+	"github.com/nicobianchetti/Go-CleanArchitecture/model"
+)
 
 //IPermisoRepository interect with permiso entity
 type IPermisoRepository interface {
@@ -14,8 +18,15 @@ type IPermisoRepository interface {
 
 type permisoRepository struct{}
 
+var (
+	db *gorm.DB
+)
+
 //NewPermisoRepository receives a DB connection and creates a new Repository.
 func NewPermisoRepository() IPermisoRepository {
+	driver := database.Postgres
+	database.New(driver)
+	db = database.DB()
 	return &permisoRepository{}
 }
 
@@ -50,7 +61,17 @@ func (r *permisoRepository) GetAll() (*model.Permisos, error) {
 	// }
 
 	// return &permisos, nil
-	return nil, nil
+
+	permisos := make(model.Permisos, 0)
+	err := db.Find(&permisos).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &permisos, nil
+
+	// return nil, nil
 }
 
 func (r *permisoRepository) GetByID(ID string) (*model.Permiso, error) {

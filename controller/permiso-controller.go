@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/nicobianchetti/Go-CleanArchitecture/model"
 	"github.com/nicobianchetti/Go-CleanArchitecture/service"
 )
 
@@ -17,12 +19,13 @@ type IPermisoController interface {
 
 type permisoController struct{}
 
-var(
-	permisoService service.IPermisoService = service.NewPermisoService()
+var (
+	permisoService service.IPermisoService
 )
 
 //NewPermisoController create new instance of controller
-func NewPermisoController() IPermisoController {
+func NewPermisoController(service service.IPermisoService) IPermisoController {
+	permisoService = service
 	return &permisoController{}
 }
 
@@ -41,6 +44,36 @@ func (c *permisoController) GetAll(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	// responsePermisos(w, http.StatusOK, dtoPermiso)
+
+	// pr, err := c.controller.GetAll()
+
+	// if err != nil {
+	// 	responsePermisos(w, http.StatusNotFound, nil)
+	// }
+
+	// var dtoPermiso []*DTOPermisoResponse
+
+	// for _, permiso := range *pr {
+	// 	dtoItem := NewPermisoDTOWFromPermiso(&permiso)
+	// 	dtoPermiso = append(dtoPermiso, dtoItem)
+	// }
+
+	// responsePermisos(w, http.StatusOK, dtoPermiso)
+
+	pr, err := permisoService.GetAll()
+
+	if err != nil {
+		responsePermisos(w, http.StatusNotFound, nil)
+	}
+
+	var dtoPermiso []*model.DTOPermisoResponse
+
+	for _, permiso := range *pr {
+		dtoItem := model.NewPermisoDTOWFromPermiso(&permiso)
+		dtoPermiso = append(dtoPermiso, dtoItem)
+	}
+
+	responsePermisos(w, http.StatusOK, dtoPermiso)
 }
 
 func (c *permisoController) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -145,8 +178,8 @@ func (c *permisoController) Delete(w http.ResponseWriter, r *http.Request) {
 // 	json.NewEncoder(w).Encode(permiso)
 // }
 
-// func responsePermisos(w http.ResponseWriter, status int, permisos []*DTOPermisoResponse) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(status)
-// 	json.NewEncoder(w).Encode(permisos)
-// }
+func responsePermisos(w http.ResponseWriter, status int, permisos []*model.DTOPermisoResponse) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(permisos)
+}
