@@ -68,7 +68,7 @@ func (c *permisoController) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	var dtoPermiso []*model.DTOPermisoResponse
 
-	for _, permiso := range *pr {
+	for _, permiso := range pr {
 		dtoItem := model.NewPermisoDTOWFromPermiso(&permiso)
 		dtoPermiso = append(dtoPermiso, dtoItem)
 	}

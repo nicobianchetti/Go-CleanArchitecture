@@ -10,9 +10,9 @@ import (
 //IPermisoService interact with IPermisoRepository
 type IPermisoService interface {
 	Migrate() error
-	Create(*model.Permiso) error
+	Create(*model.Permiso) (*model.Permiso, error)
 	Update(string, *model.Permiso) error
-	GetAll() (*model.Permisos, error)
+	GetAll() ([]model.Permiso, error)
 	GetByID(string) (*model.Permiso, error)
 	Delete(string) error
 	Validate(permiso *model.Permiso) error
@@ -51,7 +51,7 @@ func (s *permisoService) Migrate() error {
 }
 
 // Create is used for create a permiso
-func (s *permisoService) Create(p *model.Permiso) error {
+func (s *permisoService) Create(p *model.Permiso) (*model.Permiso, error) {
 	// p.ID = uuid.New().String()
 	// p.Status = true
 	// p.CreatedAt = time.Now()
@@ -59,16 +59,23 @@ func (s *permisoService) Create(p *model.Permiso) error {
 
 	// return s.service.Create(p)
 
-	return nil
+	return nil, nil
 }
 
 // GetAll is used for get all the permisos
-func (s *permisoService) GetAll() (*model.Permisos, error) {
+func (s *permisoService) GetAll() ([]model.Permiso, error) {
 	// return s.service.GetAll()
 
-	return repo.GetAll()
+	// return repo.GetAll()
 
-	// return nil, nil
+	permisos, _ := repo.GetAll()
+
+	for _, v := range permisos {
+		v.ID = "55"
+	}
+
+	return permisos, nil
+
 }
 
 // GetByID is used for get a permiso

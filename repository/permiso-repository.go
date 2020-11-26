@@ -9,9 +9,9 @@ import (
 //IPermisoRepository interect with permiso entity
 type IPermisoRepository interface {
 	Migrate() error
-	Create(*model.Permiso) error
+	Create(*model.Permiso) (*model.Permiso, error)
 	Update(string, *model.Permiso) error
-	GetAll() (*model.Permisos, error)
+	GetAll() ([]model.Permiso, error)
 	GetByID(string) (*model.Permiso, error)
 	Delete(string) error
 }
@@ -40,7 +40,7 @@ func (r *permisoRepository) Migrate() error {
 	return nil
 }
 
-func (r *permisoRepository) Create(pr *model.Permiso) error {
+func (r *permisoRepository) Create(pr *model.Permiso) (*model.Permiso, error) {
 	// err := r.db.Create(&pr).Error
 	// if err != nil {
 	// 	return err
@@ -48,10 +48,10 @@ func (r *permisoRepository) Create(pr *model.Permiso) error {
 
 	// return nil
 
-	return nil
+	return nil, nil
 }
 
-func (r *permisoRepository) GetAll() (*model.Permisos, error) {
+func (r *permisoRepository) GetAll() ([]model.Permiso, error) {
 
 	// permisos := make(model.Permisos, 0)
 	// err := r.db.Find(&permisos).Error
@@ -62,14 +62,14 @@ func (r *permisoRepository) GetAll() (*model.Permisos, error) {
 
 	// return &permisos, nil
 
-	permisos := make(model.Permisos, 0)
+	permisos := make([]model.Permiso, 0)
 	err := db.Find(&permisos).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &permisos, nil
+	return permisos, nil
 
 	// return nil, nil
 }
