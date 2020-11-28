@@ -2,7 +2,9 @@ package service
 
 import (
 	"errors"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/nicobianchetti/Go-CleanArchitecture/model"
 	"github.com/nicobianchetti/Go-CleanArchitecture/repository"
 )
@@ -52,14 +54,14 @@ func (s *permisoService) Migrate() error {
 
 // Create is used for create a permiso
 func (s *permisoService) Create(p *model.Permiso) (*model.Permiso, error) {
-	// p.ID = uuid.New().String()
-	// p.Status = true
-	// p.CreatedAt = time.Now()
-	// p.UpdatedAt = time.Now()
+	p.ID = uuid.New().String()
+	p.Status = true
+	p.CreatedAt = time.Now()
+	p.UpdatedAt = time.Now()
 
-	// return s.service.Create(p)
+	return repo.Create(p)
 
-	return nil, nil
+	// return nil, nil
 }
 
 // GetAll is used for get all the permisos

@@ -58,7 +58,7 @@ func TestGetAllPermiso(t *testing.T) {
 	permiso := model.Permiso{ID: "123", Name: "Permiso 1", Description: "Descripcion de permiso 1", Status: true, Owner: "Nicolas"}
 
 	//Setup expected
-	//Cuando el met GetAll se invoca en éste mock , va a devolver un array incluyendo el elemento que se le pasa(permiso)
+	//Cuando el method GetAll se invoca en éste mock , va a devolver un array incluyendo el elemento que se le pasa(permiso)
 	mockRepo.On("GetAll").Return([]model.Permiso{permiso}, nil)
 
 	testServiceM := NewPermisoService(mockRepo)
@@ -74,6 +74,34 @@ func TestGetAllPermiso(t *testing.T) {
 	assert.Equal(t, "Descripcion de permiso 1", result[0].Description)
 	assert.Equal(t, true, result[0].Status)
 	assert.Equal(t, "Nicolas", result[0].Owner)
+
+}
+
+func TestCreatePermiso(t *testing.T) {
+	mockRepo := new(MockPermisoRepository)
+
+	permiso := model.Permiso{Name: "Permiso 1", Description: "Descripcion de permiso 1", Status: true, Owner: "Nicolas"}
+
+	//Setup expectations , uso método Create DEL REPOSITORY
+	mockRepo.On("Create").Return(&permiso, nil)
+
+	//Creo el servicio de prueba que es el servicio que estoy probando y le paso el repositorio simulado
+	testServiceM := NewPermisoService(mockRepo)
+
+	//Lamo al create implementado en el servicio
+	result, err := testServiceM.Create(&permiso)
+
+	//Mock Assertion: Behavioral, le paso la prueba (t)
+	mockRepo.AssertExpectations(t)
+
+	//Data assertion
+	assert.NotNil(t, result.ID)
+	assert.Equal(t, "Permiso 1", result.Name)
+	assert.Equal(t, "Descripcion de permiso 1", result.Description)
+	assert.Equal(t, true, result.Status)
+	assert.Equal(t, "Nicolas", result.Owner)
+
+	assert.Nil(t, err)
 
 }
 
