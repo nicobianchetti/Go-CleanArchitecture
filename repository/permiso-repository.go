@@ -41,14 +41,14 @@ func (r *permisoRepository) Migrate() error {
 }
 
 func (r *permisoRepository) Create(pr *model.Permiso) (*model.Permiso, error) {
-	// err := r.db.Create(&pr).Error
-	// if err != nil {
-	// 	return err
-	// }
+	err := db.Create(&pr).Error
+	if err != nil {
+		return nil, err
+	}
 
-	// return nil
+	return pr, nil
 
-	return nil, nil
+	// return nil, nil
 }
 
 func (r *permisoRepository) GetAll() ([]model.Permiso, error) {
@@ -105,15 +105,15 @@ func (r *permisoRepository) Update(id string, p *model.Permiso) error {
 
 func (r *permisoRepository) Delete(id string) error {
 
-	// // Delete Soft
-	// permiso := model.Permiso{}
-	// permiso.ID = id
+	// Delete Soft
+	permiso := model.Permiso{}
+	permiso.ID = id
 
-	// err := r.db.Delete(&permiso).Error
+	err := db.Delete(&permiso).Error
 
-	// if err != nil {
-	// 	return err
-	// }
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

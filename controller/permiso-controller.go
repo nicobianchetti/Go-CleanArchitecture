@@ -96,28 +96,30 @@ func (c *permisoController) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *permisoController) Create(w http.ResponseWriter, r *http.Request) {
-	// decoder := json.NewDecoder(r.Body)
+	decoder := json.NewDecoder(r.Body)
 
-	// var permisoDTO DTOPermisoRequest
-	// err := decoder.Decode(&permisoDTO)
+	var permisoDTO model.DTOPermisoRequest
+	err := decoder.Decode(&permisoDTO)
 
-	// defer r.Body.Close()
+	defer r.Body.Close()
 
-	// if err != nil {
-	// 	responsePermiso(w, http.StatusBadRequest, nil)
-	// 	return
-	// }
+	if err != nil {
+		responsePermiso(w, http.StatusBadRequest, nil)
+		return
+	}
 
-	// permiso := NewPermisoFromDTO(&permisoDTO)
+	permiso := model.NewPermisoFromDTO(&permisoDTO)
 
-	// err = c.controller.Create(permiso)
+	permisoRes, err := permisoService.Create(permiso)
 
-	// if err != nil {
-	// 	responsePermiso(w, http.StatusBadRequest, nil)
-	// 	return
-	// }
+	dtoItem := model.NewPermisoDTOWFromPermiso(permisoRes)
 
-	// responsePermiso(w, http.StatusCreated, nil)
+	if err != nil {
+		responsePermiso(w, http.StatusBadRequest, nil)
+		return
+	}
+
+	responsePermiso(w, http.StatusCreated, dtoItem)
 
 }
 
@@ -172,11 +174,11 @@ func (c *permisoController) Delete(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func responsePermiso(w http.ResponseWriter, status int, permiso *DTOPermisoResponse) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(status)
-// 	json.NewEncoder(w).Encode(permiso)
-// }
+func responsePermiso(w http.ResponseWriter, status int, permiso *model.DTOPermisoResponse) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(permiso)
+}
 
 func responsePermisos(w http.ResponseWriter, status int, permisos []*model.DTOPermisoResponse) {
 	w.Header().Set("Content-Type", "application/json")

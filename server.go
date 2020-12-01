@@ -25,6 +25,7 @@ func main() {
 	})
 
 	httpRouter.GET("/v1/permiso/permisos", permisoController.GetAll)
+	httpRouter.POST("/v1/permiso/permiso", permisoController.Create)
 
 	httpRouter.SERVE(port)
 }
