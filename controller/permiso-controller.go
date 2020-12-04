@@ -45,21 +45,6 @@ func (c *permisoController) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	// responsePermisos(w, http.StatusOK, dtoPermiso)
 
-	// pr, err := c.controller.GetAll()
-
-	// if err != nil {
-	// 	responsePermisos(w, http.StatusNotFound, nil)
-	// }
-
-	// var dtoPermiso []*DTOPermisoResponse
-
-	// for _, permiso := range *pr {
-	// 	dtoItem := NewPermisoDTOWFromPermiso(&permiso)
-	// 	dtoPermiso = append(dtoPermiso, dtoItem)
-	// }
-
-	// responsePermisos(w, http.StatusOK, dtoPermiso)
-
 	pr, err := permisoService.GetAll()
 
 	if err != nil {
