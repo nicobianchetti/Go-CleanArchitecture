@@ -83,7 +83,8 @@ func (s *permisoService) GetAll() ([]model.Permiso, error) {
 // GetByID is used for get a permiso
 func (s *permisoService) GetByID(id string) (*model.Permiso, error) {
 	// return s.service.GetByID(id)
-	return nil, nil
+
+	return repo.GetByID(id)
 }
 
 // Update is used for update a permiso

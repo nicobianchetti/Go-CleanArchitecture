@@ -76,17 +76,16 @@ func (r *permisoRepository) GetAll() ([]model.Permiso, error) {
 
 func (r *permisoRepository) GetByID(ID string) (*model.Permiso, error) {
 
-	// permiso := model.Permiso{}
+	permiso := model.Permiso{}
 
-	// err := r.db.Where("id = ?", ID).First(&permiso).Error
+	err := db.Where("id = ?", ID).First(&permiso).Error
 
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if err != nil {
+		return nil, err
+	}
 
-	// return &permiso, nil
+	return &permiso, nil
 
-	return nil, nil
 }
 
 func (r *permisoRepository) Update(id string, p *model.Permiso) error {

@@ -44,7 +44,7 @@ func NewPermisoDTOWFromPermiso(p *Permiso) *DTOPermisoResponse {
 	}
 }
 
-//NewPermisoFromDTO created struc Permiso from dto input
+//NewPermisoFromDTO created struct Permiso from dto input
 func NewPermisoFromDTO(d *DTOPermisoRequest) *Permiso {
 	return &Permiso{
 		// ID:          d.ID,

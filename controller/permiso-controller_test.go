@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/nicobianchetti/Go-CleanArchitecture/cache"
 	"github.com/nicobianchetti/Go-CleanArchitecture/model"
 	"github.com/nicobianchetti/Go-CleanArchitecture/repository"
 	"github.com/nicobianchetti/Go-CleanArchitecture/service"
@@ -25,7 +26,8 @@ const (
 var (
 	permisoRepositoryTst repository.IPermisoRepository = repository.NewPermisoRepository()
 	permisoServiceTst    service.IPermisoService       = service.NewPermisoService(permisoRepositoryTst)
-	permisoControllerTst IPermisoController            = NewPermisoController(permisoServiceTst)
+	permisoCacheTst      cache.PermisoCache            = cache.NewRedisCache("lolcahost:6372", 0, 10)
+	permisoControllerTst IPermisoController            = NewPermisoController(permisoServiceTst, permisoCacheTst)
 
 	// testConteoller = NewPermisoController(nil)
 )
@@ -79,7 +81,7 @@ func TestGetAllPermiso(t *testing.T) {
 
 	mockService.On("GetAll").Return([]model.Permiso{permiso}, nil)
 
-	testControllerM := NewPermisoController(mockService)
+	testControllerM := NewPermisoController(mockService, permisoCache)
 
 	//------------------------------------------------------------------------------------------
 

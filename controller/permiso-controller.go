@@ -2,8 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
+	"github.com/nicobianchetti/Go-CleanArchitecture/cache"
 	"github.com/nicobianchetti/Go-CleanArchitecture/model"
 	"github.com/nicobianchetti/Go-CleanArchitecture/service"
 )
@@ -21,29 +24,17 @@ type permisoController struct{}
 
 var (
 	permisoService service.IPermisoService
+	permisoCache   cache.PermisoCache
 )
 
 //NewPermisoController create new instance of controller
-func NewPermisoController(service service.IPermisoService) IPermisoController {
+func NewPermisoController(service service.IPermisoService, cache cache.PermisoCache) IPermisoController {
 	permisoService = service
+	permisoCache = cache
 	return &permisoController{}
 }
 
 func (c *permisoController) GetAll(w http.ResponseWriter, r *http.Request) {
-	// pr, err := c.controller.GetAll()
-
-	// if err != nil {
-	// 	responsePermisos(w, http.StatusNotFound, nil)
-	// }
-
-	// var dtoPermiso []*DTOPermisoResponse
-
-	// for _, permiso := range *pr {
-	// 	dtoItem := NewPermisoDTOWFromPermiso(&permiso)
-	// 	dtoPermiso = append(dtoPermiso, dtoItem)
-	// }
-
-	// responsePermisos(w, http.StatusOK, dtoPermiso)
 
 	pr, err := permisoService.GetAll()
 
@@ -62,21 +53,35 @@ func (c *permisoController) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *permisoController) GetByID(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
 
-	// permiso, err := c.controller.GetByID(vars["id"])
+	vars := mux.Vars(r)
 
-	// if err != nil {
-	// 	// responsePermiso(w, http.StatusNotFound, nil)
-	// 	http.Error(w, "Permiso Not found", http.StatusNotFound)
-	// 	return
-	// }
+	var permisoC *model.Permiso = permisoCache.Get(vars["id"])
 
-	// var dtoPermiso *DTOPermisoResponse
+	if permisoC == nil {
+		permiso, err := permisoService.GetByID(vars["id"])
+		fmt.Println("Permiso service:", permiso)
+		if err != nil {
+			http.Error(w, "Permiso Not found", http.StatusNotFound)
+			return
+		}
 
-	// dtoPermiso = NewPermisoDTOWFromPermiso(permiso)
+		if permiso == nil {
+			http.Error(w, "Permiso Not found in DB", http.StatusNotFound)
+			return
+		}
 
-	// responsePermiso(w, http.StatusOK, dtoPermiso)
+		fmt.Println("Antes del set a cache")
+		permisoCache.Set(vars["id"], permiso)
+		dtoPermiso := model.NewPermisoDTOWFromPermiso(permiso)
+
+		responsePermiso(w, http.StatusOK, dtoPermiso)
+
+	} else {
+		dtoPermiso := model.NewPermisoDTOWFromPermiso(permisoC)
+
+		responsePermiso(w, http.StatusOK, dtoPermiso)
+	}
 
 }
 
